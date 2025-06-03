@@ -1,103 +1,96 @@
--- Roblox Premium GUI Executor (Gold + Blue Theme with Scrollable Tabs)
+-- Roblox Premium GUI Executor (Blue Elegant Theme)
 -- By TheMugenKing
 
--- Services
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local TeleportService = game:GetService("TeleportService")
 
--- GUI Setup
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
-screenGui.Name = "GoldBlueExecutor"
+screenGui.Name = "BlueElegantExecutor"
 screenGui.ResetOnSpawn = false
 
--- Toggle Button
 local toggle = Instance.new("ImageButton", screenGui)
 toggle.Size = UDim2.new(0, 45, 0, 45)
 toggle.Position = UDim2.new(0, 10, 0.5, -22)
 toggle.Image = "rbxassetid://114515690129915"
-toggle.BackgroundColor3 = Color3.fromRGB(255, 223, 77)
-toggle.Draggable = true
+toggle.BackgroundColor3 = Color3.fromRGB(60, 130, 200)
 toggle.BorderSizePixel = 0
+toggle.Draggable = true
 
--- Main Frame
 local main = Instance.new("Frame", screenGui)
 main.Size = UDim2.new(0, 550, 0, 380)
 main.Position = UDim2.new(0.5, -275, 0.5, -190)
-main.BackgroundColor3 = Color3.fromRGB(240, 212, 96)
+main.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
 main.Visible = false
 main.BorderSizePixel = 0
 main.Active = true
 main.Draggable = true
 Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
 
--- Tab Panel with Scroll
 local tabScroll = Instance.new("ScrollingFrame", main)
 tabScroll.Size = UDim2.new(0, 130, 1, 0)
 tabScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 tabScroll.ScrollBarThickness = 4
-tabScroll.BackgroundColor3 = Color3.fromRGB(200, 230, 255)
+tabScroll.BackgroundColor3 = Color3.fromRGB(45, 100, 180)
 tabScroll.BorderSizePixel = 0
 
 local tabLayout = Instance.new("UIListLayout", tabScroll)
 tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 tabLayout.Padding = UDim.new(0, 5)
-
 tabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    tabScroll.CanvasSize = UDim2.new(0, 0, 0, tabLayout.AbsoluteContentSize.Y + 10)
+	tabScroll.CanvasSize = UDim2.new(0, 0, 0, tabLayout.AbsoluteContentSize.Y + 10)
 end)
 
--- Content Holder
 local content = Instance.new("Frame", main)
 content.Position = UDim2.new(0, 130, 0, 0)
 content.Size = UDim2.new(1, -130, 1, 0)
 content.BackgroundTransparency = 1
 
--- Tab System
 local tabs = {
-    "Home", "Editor", "Serverhop", "Scripts Hubs", "Tools", "Settings",
-    "Explorer", "Player", "Teleport", "Chat Spy", "Credits"
+	"Home", "Editor", "Serverhop", "Scripts Hubs", "Tools", "Settings",
+	"Explorer", "Player", "Teleport", "Chat Spy", "Credits"
 }
+
 local pages = {}
-
 for _, name in pairs(tabs) do
-    local btn = Instance.new("TextButton", tabScroll)
-    btn.Text = name
-    btn.Size = UDim2.new(1, -10, 0, 30)
-    btn.TextColor3 = Color3.fromRGB(20, 40, 90)
-    btn.BackgroundColor3 = Color3.fromRGB(255, 215, 100)
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 14
-    btn.BorderSizePixel = 0
+	local btn = Instance.new("TextButton", tabScroll)
+	btn.Text = name
+	btn.Size = UDim2.new(1, -10, 0, 30)
+	btn.TextColor3 = Color3.fromRGB(240, 240, 255)
+	btn.BackgroundColor3 = Color3.fromRGB(90, 130, 220)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 14
+	btn.BorderSizePixel = 0
+	btn.AutoButtonColor = true
 
-    local page = Instance.new("Frame", content)
-    page.Name = name
-    page.Size = UDim2.new(1, 0, 1, 0)
-    page.BackgroundTransparency = 1
-    page.Visible = false
-    pages[name] = page
+	local page = Instance.new("Frame", content)
+	page.Name = name
+	page.Size = UDim2.new(1, 0, 1, 0)
+	page.BackgroundTransparency = 1
+	page.Visible = false
+	pages[name] = page
 
-    btn.MouseButton1Click:Connect(function()
-        for _, p in pairs(content:GetChildren()) do
-            if p:IsA("Frame") then p.Visible = false end
-        end
-        page.Visible = true
-    end)
+	btn.MouseButton1Click:Connect(function()
+		for _, p in pairs(content:GetChildren()) do
+			if p:IsA("Frame") then p.Visible = false end
+		end
+		page.Visible = true
+	end)
 end
 
 toggle.MouseButton1Click:Connect(function()
-    main.Visible = not main.Visible
+	main.Visible = not main.Visible
 end)
 pages["Home"].Visible = true
 
--- FPS Viewer (Home)
+-- FPS Display
 local fpsLabel = Instance.new("TextLabel", pages["Home"])
 fpsLabel.Size = UDim2.new(1, 0, 0, 30)
 fpsLabel.Position = UDim2.new(0, 0, 0, 10)
 fpsLabel.BackgroundTransparency = 1
-fpsLabel.TextColor3 = Color3.fromRGB(0, 0, 80)
+fpsLabel.TextColor3 = Color3.fromRGB(200, 255, 255)
 fpsLabel.Font = Enum.Font.GothamBold
 fpsLabel.TextSize = 18
 fpsLabel.Text = "FPS: Calculating..."
@@ -105,15 +98,15 @@ fpsLabel.Text = "FPS: Calculating..."
 local frames = 0
 local last = tick()
 RunService.RenderStepped:Connect(function()
-    frames += 1
-    if tick() - last >= 1 then
-        fpsLabel.Text = "FPS: " .. frames
-        frames = 0
-        last = tick()
-    end
+	frames += 1
+	if tick() - last >= 1 then
+		fpsLabel.Text = "FPS: " .. frames
+		frames = 0
+		last = tick()
+	end
 end)
 
--- Editor Tab
+-- Editor
 local editor = pages["Editor"]
 local box = Instance.new("TextBox", editor)
 box.Size = UDim2.new(1, -20, 0.6, 0)
@@ -126,19 +119,20 @@ box.TextYAlignment = Enum.TextYAlignment.Top
 box.ClearTextOnFocus = false
 box.Font = Enum.Font.Code
 box.TextSize = 14
-box.TextColor3 = Color3.new(0,0,0)
-box.BackgroundColor3 = Color3.fromRGB(255,255,255)
+box.TextColor3 = Color3.fromRGB(0,0,0)
+box.BackgroundColor3 = Color3.fromRGB(240,240,255)
 
 local function makeBtn(parent, text, pos, callback)
-    local btn = Instance.new("TextButton", parent)
-    btn.Text = text
-    btn.Size = UDim2.new(0.3, 0, 0, 30)
-    btn.Position = pos
-    btn.BackgroundColor3 = Color3.fromRGB(255, 230, 150)
-    btn.TextColor3 = Color3.new(0, 0, 0)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 14
-    btn.MouseButton1Click:Connect(callback)
+	local btn = Instance.new("TextButton", parent)
+	btn.Text = text
+	btn.Size = UDim2.new(0.3, 0, 0, 30)
+	btn.Position = pos
+	btn.BackgroundColor3 = Color3.fromRGB(60, 130, 210)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 14
+	btn.BorderSizePixel = 0
+	btn.MouseButton1Click:Connect(callback)
 end
 
 makeBtn(editor, "Execute", UDim2.new(0, 10, 0.7, 0), function() loadstring(box.Text)() end)
@@ -147,43 +141,41 @@ makeBtn(editor, "Hide/Show", UDim2.new(0.7, 0, 0.7, 0), function() box.Visible =
 
 -- Serverhop
 makeBtn(pages["Serverhop"], "Serverhop", UDim2.new(0.1, 0, 0.1, 0), function()
-    TeleportService:Teleport(game.PlaceId)
+	TeleportService:Teleport(game.PlaceId)
 end)
 makeBtn(pages["Serverhop"], "Rejoin", UDim2.new(0.5, 0, 0.1, 0), function()
-    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+	TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
 end)
 
--- Scripts Hubs
+-- Scripts Hub
 makeBtn(pages["Scripts Hubs"], "Load Hub", UDim2.new(0.1, 0, 0.1, 0), function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/godifreal/MugenUiOp/refs/heads/main/2", true))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/godifreal/MugenUiOp/refs/heads/main/2", true))()
 end)
 
 -- Tools
 makeBtn(pages["Tools"], "Paste Clipboard", UDim2.new(0.1, 0, 0.1, 0), function()
-    pcall(function()
-        box.Text = tostring(setclipboard and getclipboard())
-    end)
+	pcall(function() box.Text = tostring(setclipboard and getclipboard()) end)
 end)
 makeBtn(pages["Tools"], "Anti-AFK", UDim2.new(0.1, 0, 0.3, 0), function()
-    local vu = game:GetService("VirtualUser")
-    LocalPlayer.Idled:Connect(function()
-        vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-        wait(1)
-        vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-    end)
+	local vu = game:GetService("VirtualUser")
+	LocalPlayer.Idled:Connect(function()
+		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		task.wait(1)
+		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	end)
 end)
 
 -- Settings
 makeBtn(pages["Settings"], "Reset GUI", UDim2.new(0.1, 0, 0.1, 0), function()
-    main.Position = UDim2.new(0.5, -275, 0.5, -190)
+	main.Position = UDim2.new(0.5, -275, 0.5, -190)
 end)
 
 -- Player
 makeBtn(pages["Player"], "Speed 100", UDim2.new(0.1, 0, 0.1, 0), function()
-    LocalPlayer.Character.Humanoid.WalkSpeed = 100
+	LocalPlayer.Character.Humanoid.WalkSpeed = 100
 end)
 makeBtn(pages["Player"], "Jump 120", UDim2.new(0.5, 0, 0.1, 0), function()
-    LocalPlayer.Character.Humanoid.JumpPower = 120
+	LocalPlayer.Character.Humanoid.JumpPower = 120
 end)
 
 -- Chat Spy
@@ -195,19 +187,19 @@ spyLabel.TextWrapped = true
 spyLabel.TextYAlignment = Enum.TextYAlignment.Top
 spyLabel.Font = Enum.Font.Code
 spyLabel.TextSize = 14
-spyLabel.BackgroundColor3 = Color3.fromRGB(255,255,255)
+spyLabel.BackgroundColor3 = Color3.fromRGB(240,240,240)
 spyLabel.TextColor3 = Color3.fromRGB(0,0,0)
 
 Players.PlayerChatted:Connect(function(player, msg)
-    spyLabel.Text = spyLabel.Text .. "\\n[" .. player.Name .. "]: " .. msg
+	spyLabel.Text = spyLabel.Text .. "\n[" .. player.Name .. "]: " .. msg
 end)
 
 -- Credits
 local cred = Instance.new("TextLabel", pages["Credits"])
 cred.Size = UDim2.new(1, 0, 1, 0)
 cred.BackgroundTransparency = 1
-cred.Text = "💛Made by TheMugenKing💛"
-cred.TextColor3 = Color3.fromRGB(20, 20, 100)
+cred.Text = "💙 Made by TheMugenKing 💙"
+cred.TextColor3 = Color3.fromRGB(160, 200, 255)
 cred.Font = Enum.Font.GothamBold
 cred.TextSize = 18
 cred.TextWrapped = true
